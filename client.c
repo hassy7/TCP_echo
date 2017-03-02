@@ -18,8 +18,6 @@ int main(int argc, char *argv[])
 {
 	struct sockaddr_in server;
 	int sock;
-	char buf[32];
-	int n;
 	in_port_t port = atoi(argv[2]);
 	in_addr_t addr = inet_addr(argv[1]);
 	struct echo_msg c_msg;
@@ -62,10 +60,6 @@ int main(int argc, char *argv[])
 
 			perror("sendto");
 			exit(1);
-		}
-		if (i == 9) {
-		} else {
-			printf("sended\n");
 		}
 		if ((count = recv(sock, &c_msg, sizeof c_msg, 0)) < 0) {
 			perror("recvfrom");
