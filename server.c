@@ -14,8 +14,7 @@ struct echo_msg {
 	char msg[32];
 };
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	int sock0;
 	struct sockaddr_in addr;
@@ -39,31 +38,33 @@ main(int argc, char *argv[])
 
 	/* TCPクライアントからの接続要求を待てる状態にする */
 	listen(sock0, 5);
-
-	/* TCPクライアントからの接続要求を受け付ける */
-	len = sizeof(client);
-	sock = accept(sock0, (struct sockaddr *)&client, &len);
-
 	for (;;) {
-		//受信待ち
-		sktlen = sizeof sock;
-		if ((count = recvfrom(sock, &s_msg, sizeof s_msg, 0, (struct sockaddr *)&sock, &sktlen)) < 0) {
-			perror("recvfrom");
-			exit(1);
-		}
-		/* 5文字送信 */
-		//write(sock, "HELLO", 5);
-		printf("seq : %d, msg : %s\n", s_msg.seq, s_msg.msg);
-		s_msg.seq = s_msg.seq + 1;
-		if ((count = sendto(sock, &s_msg, sizeof s_msg, 0, (struct sockaddr *)&sock, sizeof sock)) < 0) {
-			perror("sendto");
-			exit(1);
-		}
-		printf("%s\n", s_msg.msg);
-	}
+		/* TCPクライアントからの接続要求を受け付ける */
+		len = sizeof(client);
+		sock = accept(sock0, (struct sockaddr *)&client, &len);
 
-	/* TCPセッションの終了 */
-	close(sock);
+		for (;;) {
+			//受信待ち
+			sktlen = sizeof sock;
+			if ((count = recvfrom(sock, &s_msg, sizeof s_msg, 0, (struct sockaddr *)&sock, &sktlen)) < 0) {
+				perror("recvfrom");
+				exit(1);
+			}
+			/* 5文字送信 */
+			//write(sock, "HELLO", 5);
+			printf("seq : %d, msg : %s\n", s_msg.seq, s_msg.msg);
+			s_msg.seq = s_msg.seq + 1;
+			if ((count = sendto(sock, &s_msg, sizeof s_msg, 0, (struct sockaddr *)&sock, sizeof sock)) < 0) {
+				perror("sendto");
+				exit(1);
+			}
+			printf("%s\n", s_msg.msg);
+			if (strcmp(s_msg.msg, "FIN") == 0) break;
+		}
+
+		/* TCPセッションの終了 */
+		close(sock);
+	}
 
 	/* listen するsocketの終了 */
 	close(sock0);

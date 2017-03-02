@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 	c_msg.seq = 0;
 
 	/* ソケットの作成 */
-		if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("socket");
 		exit(1);
 	}
@@ -47,8 +47,6 @@ int main(int argc, char *argv[])
 
 	//printf("%d, %s\n", n, buf);
 	for (i = 0; i < 10; i++) {
-
-
 		if (i < 9) {
 			printf("Input message : ");
 			fgets(c_msg.msg, 32, stdin);
@@ -73,6 +71,7 @@ int main(int argc, char *argv[])
 			perror("recvfrom");
 			exit(1);
 		}
+		printf("%s\n", c_msg.msg);
 		if (strcmp(c_msg.msg, "FIN") == 0) break;
 	}
 	/* socketの終了 */
