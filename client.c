@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
 
 		sktlen = sizeof sock;
-		if ((count = sendto(sock, &c_msg, sizeof c_msg, 0, (struct sockaddr *)&sock, sizeof sock)) < 0) {
+		if ((count = send(sock, &c_msg, sizeof c_msg, 0)) < 0) {
 
 			perror("sendto");
 			exit(1);
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 		} else {
 			printf("sended\n");
 		}
-		if ((count = recvfrom(sock, &c_msg, sizeof c_msg, 0, (struct sockaddr *)&sock, &sktlen)) < 0) {
+		if ((count = recv(sock, &c_msg, sizeof c_msg, 0)) < 0) {
 			perror("recvfrom");
 			exit(1);
 		}

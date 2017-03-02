@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 		for (;;) {
 			//受信待ち
 			sktlen = sizeof sock;
-			if ((count = recvfrom(sock, &s_msg, sizeof s_msg, 0, (struct sockaddr *)&sock, &sktlen)) < 0) {
+			if ((count = recv(sock, &s_msg, sizeof s_msg, 0)) < 0) {
 				perror("recvfrom");
 				exit(1);
 			}
@@ -54,12 +54,12 @@ int main(int argc, char *argv[])
 			//write(sock, "HELLO", 5);
 			printf("seq : %d, msg : %s\n", s_msg.seq, s_msg.msg);
 			s_msg.seq = s_msg.seq + 1;
-			if ((count = sendto(sock, &s_msg, sizeof s_msg, 0, (struct sockaddr *)&sock, sizeof sock)) < 0) {
+			if ((count = send(sock, &s_msg, sizeof s_msg, 0)) < 0) {
 				perror("sendto");
 				exit(1);
 			}
 			printf("%s\n", s_msg.msg);
-			if (strcmp(s_msg.msg, "FIN") == 0) break;
+			//if (strcmp(s_msg.msg, "FIN") == 0) break;
 		}
 
 		/* TCPセッションの終了 */
