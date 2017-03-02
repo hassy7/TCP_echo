@@ -25,8 +25,7 @@ int main(int argc, char *argv[])
 	int count;
 	in_port_t port = atoi(argv[1]);
 	socklen_t sktlen;
-	int pid, status;
-
+	int pid;
 
 	/* ソケットの作成 */
 	sock0 = socket(AF_INET, SOCK_STREAM, 0);
@@ -40,6 +39,9 @@ int main(int argc, char *argv[])
 	/* TCPクライアントからの接続要求を待てる状態にする */
 	listen(sock0, 5);
 	for (;;) {
+		len = sizeof(client);
+		sock = accept(sock0, (struct sockaddr *)&client, &len);
+
 		//generate child process
 		pid = fork();
 		//pidが0より小さいなら
@@ -48,8 +50,6 @@ int main(int argc, char *argv[])
 			exit(-1);
 		} else if (pid == 0) {
 			/* TCPクライアントからの接続要求を受け付ける */
-			len = sizeof(client);
-			sock = accept(sock0, (struct sockaddr *)&client, &len);
 			for (;;) {
 				//受信待ち
 				sktlen = sizeof sock;
@@ -68,12 +68,9 @@ int main(int argc, char *argv[])
 				printf("%s\n", s_msg.msg);
 				if (strcmp(s_msg.msg, "FIN") == 0 || s_msg.seq >= 10) break;
 			}
+			close(sock);
 			exit(-1);
-		} else {
-			//親プロセス
-			wait(&status);
 		}
-		/* TCPセッションの終了 */
 		close(sock);
 	}
 
