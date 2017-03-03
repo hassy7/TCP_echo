@@ -25,6 +25,11 @@ int main(int argc, char *argv[])
 	socklen_t sktlen;
 	c_msg.seq = 0;
 
+	if (argc != 3) {
+		fprintf(stdout,"Usage :  %s IP dest\n", argv[0]);
+		exit(1);
+	}
+
 	/* ソケットの作成 */
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("socket");

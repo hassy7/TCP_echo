@@ -27,6 +27,11 @@ int main(int argc, char *argv[])
 	socklen_t sktlen;
 	int pid;
 
+	if (argc != 2) {
+		fprintf(stdout,"Usage :  %s dest\n", argv[0]);
+		exit(1);
+	}
+
 	/* ソケットの作成 */
 	sock0 = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -54,15 +59,13 @@ int main(int argc, char *argv[])
 				//受信待ち
 				sktlen = sizeof sock;
 				if ((count = recv(sock, &s_msg, sizeof s_msg, 0)) < 0) {
-					perror("recvfrom");
+					perror("recv");
 					exit(1);
 				}
-				/* 5文字送信 */
-				//write(sock, "HELLO", 5);
 				printf("seq : %d, msg : %s\n", s_msg.seq, s_msg.msg);
 				s_msg.seq = s_msg.seq + 1;
 				if ((count = send(sock, &s_msg, sizeof s_msg, 0)) < 0) {
-					perror("sendto");
+					perror("send");
 					exit(1);
 				}
 				printf("%s\n", s_msg.msg);
