@@ -40,6 +40,18 @@ int main(int argc, char *argv[])
 	server.sin_port = port;
 	server.sin_addr.s_addr= addr;
 
+	//local host
+	if (server.sin_addr.s_addr == 0xffffffff) {
+		struct hostent *host;
+
+		host = gethostbyname(argv[1]);
+		if (host == NULL) {
+			return 1;
+		}
+		server.sin_addr.s_addr =
+			*(unsigned int *)host->h_addr_list[0];
+	}
+
 	/* サーバに接続 */
 
 	connect(sock, (struct sockaddr *)&server, sizeof(server));
